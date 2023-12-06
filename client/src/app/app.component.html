@@ -1,11 +1,7 @@
-<app-nav></app-nav>
-
-<div style="margin: 50px; margin-top: 10px;">
-    {{title}}
+{{title}}
 
 <ul>
-    <li *ngFor="let user of users">
-        <fa-icon [icon]="faBell"></fa-icon>{{user.id}} : {{user.userName}} 
+    <li *ngFor="let item of users">
+        {{item.id}}{{item.userName}}
     </li>
 </ul>
-</div>

@@ -1,30 +1,27 @@
-using System.Text;
 using API.Data;
-using API.Extensions;
-using API.interfaces;
-using API.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<DataContext>(opt =>
+{
+    opt.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection"));
+});
 
-builder.Services.AddAppServices(builder.Configuration);
+builder.Services.AddCors();
+builder.Services.AddControllers();
 
-builder.Services.AddJWTService(builder.Configuration);
-
-builder.Services.AddScoped<ITokenService,TokenService>();
 var app = builder.Build();
 
 app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseAuthentication();
 
 app.MapControllers();
+
 app.Run();
