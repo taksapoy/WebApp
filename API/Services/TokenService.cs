@@ -5,12 +5,17 @@ using API.Entities;
 using API.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
+
+
+namespace API.Services;
+
 public class TokenService : ITokenService
 {
     readonly SymmetricSecurityKey _privateKey;
-    public TokenService(IConfiguration config)
+
+    public TokenService(IConfiguration configuration)
     {
-        _privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]!));
+        _privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]!));
     }
     public string CreateToken(AppUser user)
     {
@@ -19,7 +24,6 @@ public class TokenService : ITokenService
         };
 
         var credentials = new SigningCredentials(_privateKey, SecurityAlgorithms.HmacSha256Signature);
-
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),

@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http'
+import { Component, OnInit } from '@angular/core'
 import { faBell } from '@fortawesome/free-solid-svg-icons'
-import { User } from 'src/_models/user';
-import { AccountService } from './_services/account.service';
+import { AccountService } from './_services/account.service'
+import { User } from './_models/user'
 
 
 @Component({
@@ -11,16 +11,23 @@ import { AccountService } from './_services/account.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title: string = 'Tinner !';
-  user: any;
-  constructor(private accountService: AccountService) { }
+  title = 'Hello';
+  faBell = faBell
+  users: any
+
+  constructor(private accountService: AccountService, private http: HttpClient) { }
+
   setCurrentUser() {
-    const userString = localStorage.getItem('user')
-    if (!userString) return
-    const user: User = JSON.parse(userString)
+    const userSrting = localStorage.getItem('user')
+    if (userSrting == null) return
+    const user: User = JSON.parse(userSrting)
     this.accountService.setCurrentUser(user)
   }
+
   ngOnInit(): void {
+    //this.getUser()
     this.setCurrentUser()
   }
+
+
 }

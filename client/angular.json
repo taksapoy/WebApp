@@ -25,10 +25,11 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/ngx-toastr/toastr.css",
-              "src/styles.css"
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "node_modules/bootswatch/dist/Quartz/bootstrap.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": []
           },
@@ -104,6 +105,6 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": "28f8180d-9a33-405b-84e9-cbe91c7f816c"
   }
 }

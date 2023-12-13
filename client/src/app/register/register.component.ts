@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AccountService } from '../_services/account.service';
-import { ToastrService } from 'ngx-toastr';
+import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { AccountService } from '../_services/account.service'
+import { Router } from '@angular/router'
+import { ToastrService } from 'ngx-toastr'
 
 @Component({
   selector: 'app-register',
@@ -8,21 +9,29 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  @Input() usersFromHomeCpmponent: any
+
+  //@Input() usersFromHomeComponent: any
   @Output() isCancel = new EventEmitter()
+
+
+  constructor(private toastr: ToastrService, private router: Router, private accountService: AccountService) { }
+
   model: any = {}
-  constructor(private toastr: ToastrService, private accountService: AccountService) { }
+
   register() {
-    this.accountService.register(this.model).subscribe({
-      next: response => {
-        this.cancel()
-      },
-      error: err => this.toastr.error(err)
-    })
+    //console.log(this.model)
+    this.accountService.register(this.model).subscribe(
+      {
+        error: err => this.toastr.error(err),
+        next: () => this.router.navigateByUrl('/members')
+
+      }
+    )
   }
+
   cancel() {
+    console.log('cancel')
     this.isCancel.emit(true)
   }
+
 }
-
-

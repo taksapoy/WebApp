@@ -1,4 +1,6 @@
-﻿using API.Interfaces;
+﻿using API.Data;
+using API.Interfaces;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions;
@@ -9,7 +11,7 @@ public static class AppServiceExtensions
     {
         services.AddDbContext<DataContext>(opt =>
         {
-            opt.UseSqlite(conf.GetConnectionString("DefaultConnection"));
+            opt.UseSqlite(conf.GetConnectionString("SQLiteConnection"));
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
