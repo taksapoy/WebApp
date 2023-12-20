@@ -11,4 +11,10 @@ public class DataContext : DbContext
 
     }
     public DbSet<AppUser> Users { get; set; }
+
+    internal Task<int> SaveAllAsync()
+    {
+        throw new NotImplementedException();
+    }
+
 }

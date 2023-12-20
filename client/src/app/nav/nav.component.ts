@@ -31,8 +31,8 @@ export class NavComponent implements OnInit {
 
   getCurrentUser() {
     this.accountService.currentUser$.subscribe({
-      next: user => console.log(user),
-      error: err => console.log(err)
+      next: (user: any) => console.log(user),
+      error: (err: any) => console.log(err)
     })
   }
 
@@ -44,12 +44,12 @@ export class NavComponent implements OnInit {
         //console.log(response)
 
       },
-      error: err => this.toastr.error(err.error) //anything that's not in 200 range of HTTP status
+      // error: err => this.toastr.error(err.error) //anything that's not in 200 range of HTTP status
     })
   }
+  
   logout() {
     this.accountService.logout()
-
-  }
-
+    this.router.navigateByUrl('/')
+}
 }

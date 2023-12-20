@@ -1,34 +1,51 @@
 ﻿using API.Controllers;
 using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
-[Authorize]
+//[Authorize]
 public class UsersController : BaseApiController
 {
-    private readonly DataContext _dataContext;
+    private readonly UserRepository userRepository;
+    private IUserRepository _userRepository;
+    private IMapper _mapper;
 
-    public UsersController(DataContext dataContext)
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+
+    public UsersController(IUserRepository userRepository, IMapper mapper)
     {
-
-        _dataContext = dataContext;
+        _userRepository = userRepository;
+        _mapper = mapper;
     }
 
-    [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
-        return await _dataContext.Users.ToListAsync();
+        // var users = await _userRepository.GetUsersAsync();
+        // return Ok(_mapper.Map<IEnumerable<MemberDto>>(users));
+        return Ok (await _userRepository.GetMembersAsync());
     }
+
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<AppUser?>> GetUser(int id)
+    public async Task<ActionResult<MemberDto?>> GetUser(int id)
     {
-        return await _dataContext.Users.FindAsync(id);
+        var user = await _userRepository.GetUserByIdAsync(id);
+        return _mapper.Map<MemberDto>(user);
     }
-    
+
+    [HttpGet("username/{username}")]
+    public async Task<ActionResult<MemberDto?>> GetUserByUserName(string username)
+    {
+        return await _userRepository.GetMemberByUserNameAsync(username);
+    }
+
 }
 
