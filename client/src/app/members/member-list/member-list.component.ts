@@ -1,29 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { Member } from 'src/app/_modules/member';
+import { Observable } from 'rxjs';
+import { Member } from 'src/app/_models/member';
 import { MembersService } from 'src/app/_services/members.service';
 
 @Component({
   selector: 'app-member-list',
   templateUrl: './member-list.component.html',
-  styleUrls: ['./member-list.component.css']
+  styleUrls: ['./member-list.component.css'],
 })
 export class MemberListComponent implements OnInit {
-  members : Member [] = []
-  
-  constructor( private memberService : MembersService){
+  members: Member[] = [];
+  members$: Observable<Member[]> | undefined;
 
-  }
+  constructor(private memberService: MembersService) {}
+
   ngOnInit(): void {
-    this.loadMember()
+    this.members$ = this.memberService.getMembers();
   }
 
-  loadMember() {
-    this.memberService.getMembers().subscribe({
-      next: resp => {
-        this.members = resp
-
-    }
-  })
-}
-
+  // loadMember() {
+  //   this.memberService.getMembers().subscribe({
+  //     next: (users) => (this.members = users),
+  //   });
+  // }
 }

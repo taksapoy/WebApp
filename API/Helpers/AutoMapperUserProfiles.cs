@@ -1,30 +1,26 @@
-﻿using System;
-using API.DTOs;
-using API.Entities;
-using API.Extensions;
+﻿using API.Entities;
 using AutoMapper;
 
-namespace API.Helpper ;
-#nullable disable
+namespace api;
+
 public class AutoMapperUserProfiles : Profile
 {
-    public AutoMapperUserProfiles()
-    {
-        CreateMap<AppUser, MemberDto>()
-        .ForMember(
-            user => user.Age,
-            opt => opt.MapFrom(
-                user => user.BirthDate.CalculateAge()
-            )
-        )
-
-        .ForMember(
-            user => user.MainPhotoUrl,
-            opt => opt.MapFrom (
-                user => user.Photos.FirstOrDefault (p => p.IsMain == true).Url
+  public AutoMapperUserProfiles()
+  {
+    CreateMap<AppUser, MemberDto>()
+            .ForMember(
+                user => user.MainPhotoUrl,
+                opt => opt.MapFrom(
+                    user => user.Photos.FirstOrDefault(photo => photo.IsMain).Url
+                    )
                 )
-        );
-        
-        CreateMap<Photo, PhotoDto>();
-    }
+            .ForMember(
+                user => user.Age,
+                opt => opt.MapFrom(
+                    user => user.BirthDate.CalculateAge()
+                    )
+                );
+    CreateMap<Photo, PhotoDto>();
+    CreateMap<MemberUpdateDto, AppUser>();
+  }
 }

@@ -1,7 +1,5 @@
-<div class="container">
-    <div class="row">
-        <div class="col-2" *ngFor="let user of members">
-            <app-member-card [member]="user"></app-member-card>
-        </div>
-    </div>
+<div class="row">
+  <div class="col-2" *ngFor="let user of members$ | async">
+    <app-member-card [member]="user"></app-member-card>
+  </div>
 </div>

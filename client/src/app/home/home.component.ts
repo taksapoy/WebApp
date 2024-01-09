@@ -1,31 +1,35 @@
-import { HttpClient } from '@angular/common/http'
-import { Component, OnInit } from '@angular/core'
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
-  regisMode = false
-  users: any
+export class HomeComponent {
+  regisMode = false;
 
-  constructor(private http: HttpClient) { }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.')
-  }
   regisToggle() {
-    this.regisMode = !this.regisMode
+    this.regisMode = !this.regisMode;
   }
-  cancelRegister(event: boolean) {
-    this.regisMode = !event
+
+  users: any;
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    // this.getUsers();
   }
-  // private getUser() {
+
+  // getUsers() {
   //   this.http.get('https://localhost:7777/api/users').subscribe({
-  //     next: (response) => this.users = response,
+  //     next: (response) => (this.users = response),
   //     error: (err) => console.log(err),
-  //     complete: () => console.log('request completed')
-  //   })
+  //     complete: () => console.log('request completed'),
+  //   });
   // }
 
+  cancelRegister(event: boolean) {
+    this.regisMode = !event;
+  }
 }
