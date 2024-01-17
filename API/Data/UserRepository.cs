@@ -1,6 +1,7 @@
 ﻿using api;
 using API.Data;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -17,11 +18,24 @@ public class UserRepository : IUserRepository
     _mapper = mapper;
   }
 
-  public async Task<IEnumerable<MemberDto>> GetMembersAsync()
-  {
-    return await _dataContext.Users.ProjectTo<MemberDto>(_mapper.ConfigurationProvider).ToListAsync();
-  }
+   public async Task<PageList<MemberDto>> GetMembersAsync(UserParams userParams)
+    {
+        var minBirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1)); 
+        var maxBirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
 
+        var query = _dataContext.Users.AsQueryable();
+
+        query = query.Where(user => user.BirthDate >= minBirthDate && user.BirthDate <= maxBirthDate);
+
+        query = query.Where(user => user.UserName != userParams.CurrentUserName);
+        if (userParams.Gender != "non-binary")
+          query = query.Where(user => user.Gender == userParams.Gender);
+        query.AsNoTracking();
+
+        return await PageList<MemberDto>.CreateAsync(
+          query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
+          userParams.PageNumber, userParams.PageSize);
+    }
 
   // public async Task<MemberDto> GetUserByIdAsync(int id)
   // {
