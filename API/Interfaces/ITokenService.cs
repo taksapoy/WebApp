@@ -1,6 +1,6 @@
 ﻿using API.Entities;
 
-namespace api;
+namespace API.Interfaces;
 
 public interface ITokenService
 {

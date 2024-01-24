@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
 
-namespace api;
+namespace API.Interfaces;
 
 public interface IImageService
 {

@@ -29,29 +29,20 @@ public class UserRepository : IUserRepository
 
         query = query.Where(user => user.UserName != userParams.CurrentUserName);
         if (userParams.Gender != "non-binary")
+
+         query = userParams.OrderBy switch
+        {
+            "created" => query.OrderByDescending(user => user.Created),
+            _ => query.OrderByDescending(user => user.LastActive),
+        };
+
           query = query.Where(user => user.Gender == userParams.Gender);
         query.AsNoTracking();
-
+        
         return await PageList<MemberDto>.CreateAsync(
           query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
           userParams.PageNumber, userParams.PageSize);
     }
-
-  // public async Task<MemberDto> GetUserByIdAsync(int id)
-  // {
-  //   return await _dataContext.Users
-  //       .Where(user => user.Id == id)
-  //       .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-  //       .SingleOrDefaultAsync();
-  // }
-
-  // public async Task<MemberDto> GetUserByUserNameAsync(string username)
-  // {
-  //   return await _dataContext.Users
-  //       .Where(user => user.UserName == username)
-  //       .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-  //       .SingleOrDefaultAsync();
-  // }
 
   public async Task<IEnumerable<MemberDto>> GetUsersAsync()
   {
@@ -80,10 +71,19 @@ public class UserRepository : IUserRepository
     return await _dataContext.Users.FindAsync(id);
   }
 
-  public async Task<AppUser> GetUserByUserNameAsync(string username)
-  {
-    return await _dataContext.Users
+   
+
+    public async Task<AppUser> GetUserByUserNameWithOutPhotoAsync(string username)
+    {
+        return await _dataContext.Users
+        // .Include(user => user.Photos)
+        .SingleOrDefaultAsync(user => user.UserName == username);
+    }
+
+    async Task<AppUser> IUserRepository.GetUserByUserNameAsync(string username)
+    {
+        return await _dataContext.Users
         .Include(user => user.Photos)
         .SingleOrDefaultAsync(user => user.UserName == username);
-  }
+    }
 }
