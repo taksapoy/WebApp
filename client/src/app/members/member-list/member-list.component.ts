@@ -13,10 +13,12 @@ import { MembersService } from 'src/app/_services/members.service';
   styleUrls: ['./member-list.component.css'],
 })
 export class MemberListComponent implements OnInit {
+  
   members: Member[] = []
   pagination: Pagination | undefined
   userParams: UserParams | undefined 
-  // user: User | undefined
+  user: User | undefined
+
   genderList = [
     { value: 'male', display: 'Male' },
     { value: 'female', display: 'Female' },
@@ -24,22 +26,42 @@ export class MemberListComponent implements OnInit {
   ]
 
   resetFilters() {
-      this.userParams = this.memberService.resetUserParams ()
-    this.loadMember()
+    if(this.user)
+      this.userParams = new UserParams(this.user)
   }
+
   constructor(private accountService: AccountService, private memberService: MembersService) {
-    this.userParams = memberService.getUserParams()
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: user => {
+        if (user) this.user = user
+      }
+    })
   }
 
   ngOnInit(): void {
+    this.resetFilters()
+    if (this.user) {
+      const paramsString = localStorage.getItem('userParams')
+      if (paramsString) {
+        const localParams = JSON.parse(paramsString)
+        if (localParams.username === this.user.username)
+          this.userParams = localParams.params
+      }
+    }
     this.loadMember()
   }
 
-  loadMember() {
-    if (!this.userParams) return 
+  private _saveParams() {
+    if (this.user)
+      localStorage.setItem('userParams', JSON.stringify({ 
+        username: this.user.username, 
+        params: this.userParams 
+      }))
+  }
 
-    this.memberService.setUserParams(this.userParams)
-    
+  loadMember() {
+    if (!this.userParams) return
+    this._saveParams()
     this.memberService.getMembers(this.userParams).subscribe({
       next: response => {
         if (response.result && response.pagination) {
@@ -54,7 +76,6 @@ export class MemberListComponent implements OnInit {
     if (!this.userParams) return 
     if (this.userParams.pageNumber === event.page) return 
     this.userParams.pageNumber = event.page
-    this.memberService.setUserParams(this.userParams)
     this.loadMember()
   }
 }

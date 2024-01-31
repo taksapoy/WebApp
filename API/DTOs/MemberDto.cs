@@ -1,4 +1,4 @@
-﻿namespace api;
+﻿namespace API.DTOs;
 
 public class MemberDto
 {
