@@ -14,20 +14,20 @@ export class MessageService {
 
   
   deleteMessage(id: number) {
-    const url = this.baseUrl + '/messages/' + id
+    const url = this.baseUrl + 'messages/' + id
     return this.http.delete(url)
   }
   
 
   sendMessage(recipientUsername: string, content: string) {
-    const url = this.baseUrl + '/messages'
+    const url = this.baseUrl + 'messages'
     const body = { recipientUsername, content } //ต้องสะกดตรงกับ CreateMessageDto.cs
     return this.http.post<Message>(url, body)
   }
 
 
   getMessagesThread(username: string) {
-    const url = this.baseUrl + '/messages/thread/' + username
+    const url = this.baseUrl + 'messages/thread/' + username
     return this.http.get<Message[]>(url)
   }
 
@@ -35,7 +35,7 @@ export class MessageService {
   getMessages(pageNumber: number, pageSize: number, label: string = "Unread") {
     let httpParams = getPaginationHeaders(pageNumber, pageSize)
     httpParams = httpParams.append('Label', label)
-    const url = this.baseUrl + '/messages'
+    const url = this.baseUrl + 'messages'
     return getPaginationResult<Message[]>(url, httpParams, this.http)
   }
 }

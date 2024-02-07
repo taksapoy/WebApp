@@ -32,7 +32,7 @@ export class TestErrorComponent {
     this._get('error/server-error');
   }
   getValidationError() {
-    this.http.post(this.baseUrl + '/account/register', {}).subscribe({
+    this.http.post(this.baseUrl + 'account/register', {}).subscribe({
       next: (resp) => console.log(resp),
       error: (err) => console.log(err),
     });

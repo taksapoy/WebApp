@@ -68,9 +68,9 @@ export class PhotoEditorComponent implements OnInit{
   }
 
   initUploader() {
-    console.log( this.baseUrl + '/users/add-image');
+    console.log( this.baseUrl + 'users/add-image');
     this.uploader = new FileUploader({
-      url: this.baseUrl + '/users/add-image',
+      url: this.baseUrl + 'users/add-image',
       authToken: 'Bearer ' + this.user?.token,
       isHTML5: true,
       allowedFileType: ['image'],
