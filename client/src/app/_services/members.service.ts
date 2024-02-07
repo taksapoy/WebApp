@@ -24,6 +24,7 @@ export class MembersService {
   private _key(userParams: UserParams) 
   { return Object.values(userParams).join('_'); }
 
+
   getMembers (userParams: UserParams) {
     const key = this._key(userParams)
     const response = this.memberCache.get(key) 
@@ -65,9 +66,8 @@ export class MembersService {
       return params
     }  
 
+
   getMember(username: string) {
-    // const member = this.members.find((user) => user.userName === username);
-    // if (member) return of(member);
     const cache = [...this.memberCache.values()]
     const members = cache.reduce((arr, item) => arr.concat(item.result), [])
     const member = members.find((member: Member) => member.userName === username)
@@ -75,6 +75,7 @@ export class MembersService {
 
     return this.http.get<Member>(this.baseUrl + '/users/username/' + username);
   }
+
 
   updateProfile(member: Member) {
     return this.http.put(this.baseUrl + '/users', member).pipe(
@@ -85,20 +86,24 @@ export class MembersService {
     );
   }
 
+
   setMainPhoto(photoId: number) {
     const endpoint = this.baseUrl + '/users/set-main-photo/' + photoId
     return this.http.put(endpoint, {})
   }
+
 
   deletePhoto(photoId: number) {
     const endpoint = this.baseUrl + '/users/delete-photo/' + photoId
     return this.http.delete(endpoint)
   }
 
+
   addLike(username: string) {
     return this.http.post(this.baseUrl + '/likes/' + username, {})
   }
 
+  
   getLikes(listParams: ListParams) {
     let httpParams = getPaginationHeaders(listParams.pageNumber, listParams.pageSize)
     const url = this.baseUrl + '/likes'

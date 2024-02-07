@@ -77,4 +77,28 @@ public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto creat
         if (await _messageRepository.SaveAllAsync()) return Ok(_mapper.Map<MessageDto>(message));
         return BadRequest("Something has gone wrong!");
     }
+
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteMessage(int id)
+    {
+        var username = User.GetUsername();
+        var message = await _messageRepository.GetMessage(id);
+        if (message is null || username is null) return NotFound();
+
+        var isSender = message.SenderUsername == username;
+        var isReceiver = message.RecipientUsername == username;
+        if (!isSender && !isReceiver) return Unauthorized();
+
+        if (isSender) message.IsSenderDeleted = true;
+        if (isReceiver) message.IsRecipientDeleted = true;
+
+        if (message.IsSenderDeleted && message.IsRecipientDeleted)
+        {
+            _messageRepository.DeleteMessage(message);
+        }
+
+        if (await _messageRepository.SaveAllAsync()) return Ok();
+        return BadRequest("can't delete this message!");
+    }
 }

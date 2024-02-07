@@ -15,6 +15,7 @@ public class LikesRepository : IlikesRepository
     {
         _dataContext = dataContext;
     }
+    
     public async Task<AppUser> GetUser(int userId)
     {
         return await _dataContext.Users.Include(user => user.LikedUsers)
@@ -49,9 +50,11 @@ public class LikesRepository : IlikesRepository
             City = user.City,
             Country = user.Country,
             Age = user.BirthDate.CalculateAge(),
+            Photos = user.Photos.ToList(),
             MainPhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain).Url,
             Id = user.Id
         }); //.ToListAsync();
+
         return await PageList<LikeDto>.CreateAsync(likedUsers, likesParams.PageNumber, likesParams.PageSize);
     }
 }

@@ -1,11 +1,22 @@
 ﻿using API.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class DataContext : DbContext
+public class DataContext : IdentityDbContext<
+    AppUser, 
+    AppRole, 
+    int, 
+    IdentityUserClaim<int>, 
+    AppUserRole, 
+    IdentityUserLogin<int>, 
+    IdentityRoleClaim<int>, 
+    IdentityUserToken<int>
+>
 {
-   public DbSet<Message> Messages { get; set; }
+    public DbSet<Message> Messages { get; set; }
   public DataContext(DbContextOptions options) : base(options)
   {
 
@@ -14,6 +25,18 @@ public class DataContext : DbContext
  protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+         modelBuilder.Entity<AppUser>()
+            .HasMany(appUser => appUser.UserRoles)
+            .WithOne(appUserRole => appUserRole.User)
+            .HasForeignKey(appUserRole => appUserRole.UserId)
+            .IsRequired();
+
+             modelBuilder.Entity<AppRole>()
+            .HasMany(appRole => appRole.UserRoles)
+            .WithOne(appUserRole => appUserRole.Role)
+            .HasForeignKey(appUserRole => appUserRole.RoleId)
+            .IsRequired();
 
         modelBuilder.Entity<UserLike>().HasKey(pk => new { pk.SourceUserId, pk.LikedUserId });
 
@@ -38,9 +61,8 @@ public class DataContext : DbContext
             .HasOne(message => message.Sender)
             .WithMany(appuser => appuser.MessagesSent)
             .OnDelete(DeleteBehavior.Restrict);
-
     }
 
-  public DbSet<AppUser> Users { get; set; }
+//   public DbSet<AppUser> Users { get; set; }
   public DbSet<UserLike> Likes { get; set; } 
 }

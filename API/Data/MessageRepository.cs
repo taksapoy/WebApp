@@ -37,10 +37,20 @@ public class MessageRepository : IMessageRepository
                     .Include(ms => ms.Sender).ThenInclude(user => user.Photos)
                     .Include(ms => ms.Recipient).ThenInclude(user => user.Photos)
                     .Where(ms =>
-                        (ms.RecipientUsername == senderUserName && ms.SenderUsername == recipientUserName) ||
-                        (ms.RecipientUsername == recipientUserName && ms.SenderUsername == senderUserName)
+                    (
+                        ms.RecipientUsername == senderUserName
+                        && ms.IsRecipientDeleted == false
+                        && ms.SenderUsername == recipientUserName
+                    ) ||
+                    (
+                        ms.RecipientUsername == recipientUserName
+                        && ms.IsSenderDeleted == false 
+                        && ms.SenderUsername == senderUserName
                     )
-                    .OrderByDescending(ms => ms.DateSent)
+                    )
+
+                    // .OrderByDescending(ms => ms.DateSent)
+                    .OrderBy(ms => ms.DateSent)
                     .ToListAsync();
 
          var unreadMessages = messages
@@ -61,9 +71,22 @@ public class MessageRepository : IMessageRepository
          var query = _dataContext.Messages.OrderByDescending(ms => ms.DateSent).AsQueryable();
          query = messageParams.Label switch
     {
-      "Inbox" => query.Where(ms => ms.RecipientUsername == messageParams.Username),
-      "Sent" => query.Where(ms => ms.SenderUsername == messageParams.Username),
-      _ => query.Where(ms => ms.RecipientUsername == messageParams.Username && ms.DateRead == null)
+      "Inbox" => query.Where(
+        ms => 
+            ms.RecipientUsername == messageParams.Username 
+            && ms.IsRecipientDeleted == false
+        ),
+      "Sent" => query.Where(
+        ms => 
+            ms.SenderUsername == messageParams.Username 
+            && ms.IsSenderDeleted == false
+      ),
+      _ => query.Where(
+        ms => 
+            ms.RecipientUsername == messageParams.Username 
+            && ms.IsRecipientDeleted == false
+            && ms.DateRead == null
+            )
     };
 
     var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
