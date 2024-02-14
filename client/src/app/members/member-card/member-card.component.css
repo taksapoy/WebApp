@@ -35,3 +35,13 @@
 .animate {
     transition: all 0.2s ease-in-out;
 }
+
+@keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.is-online {
+    /* animation: blink 1s linear infinite; */
+    color: green;
+}
