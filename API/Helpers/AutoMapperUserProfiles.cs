@@ -38,5 +38,13 @@ public class AutoMapperUserProfiles : Profile
     CreateMap<Photo, PhotoDto>();
     CreateMap<MemberUpdateDto, AppUser>();
     CreateMap<RegisterDto, AppUser>();
+
+    CreateMap<DateTime, DateTime>()
+        .ConvertUsing(datetime => DateTime.SpecifyKind(datetime, DateTimeKind.Utc));
+
+    CreateMap<DateTime?, DateTime?>()
+        .ConvertUsing(datetime => datetime.HasValue 
+            ? DateTime.SpecifyKind(datetime.Value, DateTimeKind.Utc) 
+            : null);
   }
 }

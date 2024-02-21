@@ -15,7 +15,6 @@ builder.Services.AddIdentityServices(builder.Configuration);
 var app = builder.Build();
 
 app.UseCors(builder => builder.AllowAnyHeader()
-// app.UseCors(x => x
 .AllowAnyMethod()
 .AllowCredentials()
 .WithOrigins("https://localhost:4200"));
@@ -30,6 +29,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 
 using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
@@ -37,10 +37,12 @@ var service = scope.ServiceProvider;
 try
 {
   var dataContext = service.GetRequiredService<DataContext>();
-  var userManager = service.GetRequiredService<UserManager<AppUser>>(); //<--
-  var roleManager = service.GetRequiredService<RoleManager<AppRole>>(); //<--
+  var userManager = service.GetRequiredService<UserManager<AppUser>>();
+  var roleManager = service.GetRequiredService<RoleManager<AppRole>>();
   await dataContext.Database.MigrateAsync();
-  await Seed.SeedUsers(userManager, roleManager); //<--
+  await Seed.SeedUsers(userManager, roleManager);
+  
+  await dataContext.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]"); //<--good for sqlite
 }
 catch (Exception e)
 {

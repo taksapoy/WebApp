@@ -5,6 +5,15 @@
               src="{{member.mainPhotoUrl || './assets/images/default-user.png'}}"
               alt="{{member.aka}}">
           <div class="card-body">
+            <div>
+                <strong>Name:</strong>
+                <p>{{member.aka}}
+                    <span style="color: green;"
+                        *ngIf="(presenceService.onlineUser$ | async)?.includes(member.userName)">
+                        Online
+                    </span>
+                </p>
+            </div>
               <div>
                   <strong>Location:</strong>
                   <p>{{member.city}} / {{member.country}}</p>
@@ -45,8 +54,9 @@
           <tab heading="Photos" #photoTab="tab">
               <gallery class="gallery" *ngIf="photoTab.active" [items]="photos"></gallery>
           </tab>
-          <tab heading="Messages">
-              <app-member-messages [username]="member.userName" [messages]="messages"></app-member-messages>
+          <tab (selectTab)="onTabActivated($event)" heading="Messages">
+              <!-- <app-member-messages [username]="member.userName" [messages]="messages"></app-member-messages> -->
+              <app-member-messages [username]="member.userName"></app-member-messages>
           </tab>
       </tabset>
   </div>
