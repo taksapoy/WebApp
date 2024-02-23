@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./test-error.component.css'],
 })
 export class TestErrorComponent {
-  baseUrl = environment.apiUrl;
+    baseUrl = environment.apiUrl
 
   constructor(private http: HttpClient) {}
 

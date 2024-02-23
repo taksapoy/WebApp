@@ -6,7 +6,12 @@ using API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-public class Seed {
+public class Seed 
+{
+    public static async Task ClearConnections(DataContext dataContext)
+    {
+        await dataContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Connections\""); //postgres
+    }
 
     public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
     {
@@ -27,13 +32,16 @@ public class Seed {
         foreach (var user in users)
         {
             user.UserName = user.UserName.ToLower();
+            user.Created = DateTime.SpecifyKind(user.Created, DateTimeKind.Utc); //
+            user.LastActive = DateTime.SpecifyKind(user.LastActive, DateTimeKind.Utc); //
+            
             await userManager.CreateAsync(user, "P@ssw0rd");
             if (user.UserName == "menta")
-                await userManager.AddToRolesAsync(user, new[] { "Member", "Moderator" }); //
+                await userManager.AddToRolesAsync(user, new[] { "Member", "Moderator" });
             else if (user.UserName == "manita")
-                await userManager.AddToRolesAsync(user, new[] { "Member", "Administrator" }); //
+                await userManager.AddToRolesAsync(user, new[] { "Member", "Administrator" });
             else
-                await userManager.AddToRoleAsync(user, "Member"); //
+                await userManager.AddToRoleAsync(user, "Member");
         }
     }
 }

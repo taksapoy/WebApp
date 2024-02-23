@@ -13,7 +13,8 @@ public static class AppServiceExtensions
   {
     services.AddDbContext<DataContext>(opt =>
     {
-      opt.UseSqlite(conf.GetConnectionString("SqliteConnection"));
+      // opt.UseSqlite(conf.GetConnectionString("SqliteConnection"));
+       opt.UseNpgsql(conf.GetConnectionString("DefaultConnection"));
     });
     services.AddCors();
     services.AddScoped<ITokenService, TokenService>();
